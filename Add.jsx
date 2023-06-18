@@ -1,32 +1,92 @@
 import { TextField,Button, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 
-const Add = () => {
-  return (
-    <div style={{textAlign:'center'}}>
-       <header>
-      <h1>Welcome to the Admin Page</h1>
-    </header>
-    <br/>
-    <br/>
-    <br/>
-      <h4>Name : <TextField id="outlined-basic" label="Enter The Name" variant="outlined" /></h4>
-       <h4>Password: <TextField type='password'id="outlined-basic" label="Password" variant="outlined"></TextField></h4>
-       <Button variant='contained'color="error">Login</Button>
-     
-        <footer>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-      <p>&copy; 2023 The Invincibles. All rights reserved.</p>
-    </footer>
-      
-    </div>
-  )
-}
+  import "./add.css";
 
-export default Add
+  function App() {
+    // React States
+    const [errorMessages, setErrorMessages] = useState({});
+    const [isSubmitted, setIsSubmitted] = useState(false);
+  
+    // User Login info
+    const database = [
+      {
+        username: "Steve Abraham Wilson",
+        password: "imthedanger"
+      },
+      {
+        username: "Karthik Dileep",
+        password: "saycheese"
+      }
+    ];
+  
+    const errors = {
+      uname: "invalid username",
+      pass: "invalid password"
+    };
+  
+    const handleSubmit = (event) => {
+      //Prevent page reload
+      event.preventDefault();
+  
+      var { uname, pass } = document.forms[0];
+  
+      // Find user login info
+      const userData = database.find((user) => user.username === uname.value);
+  
+      // Compare user info
+      if (userData) {
+        if (userData.password !== pass.value) {
+          // Invalid password
+          setErrorMessages({ name: "pass", message: errors.pass });
+        } else {
+          setIsSubmitted(true);
+        }
+      } else {
+        // Username not found
+        setErrorMessages({ name: "uname", message: errors.uname });
+      }
+    };
+  
+    // Generate JSX code for error message
+    const renderErrorMessage = (name) =>
+      name === errorMessages.name && (
+        <div className="error">{errorMessages.message}</div>
+      );
+  
+    // JSX code for login form
+    const renderForm = (
+      <div className="form">
+        <form onSubmit={handleSubmit}>
+          <div className="input-container">
+            <label>Username </label>
+            <input type="text" name="uname" required placeholder='Enter Your UserName'/>
+            {renderErrorMessage("uname")}
+          </div>
+          <div className="input-container">
+            <label>Password </label>
+            <input type="password" name="pass" required placeholder='Enter Your Password'/>
+            {renderErrorMessage("pass")}
+          </div>
+          <div class="userlogin">
+          <a href="#userlogin">Not an Admin</a>
+          </div>
+          <div className="button-container">
+            <input type="submit" value="Login"/> 
+          </div>
+        </form>
+      </div>
+    );
+  
+    return (
+      <div className="app">
+        {/* <div className="login-form"> */}
+          <div className="title">Sign In</div>
+          {isSubmitted ? window.location.replace("https://google.com") : renderForm}
+        </div>
+      // </div>
+    );
+  }
+  
+  export default App;
